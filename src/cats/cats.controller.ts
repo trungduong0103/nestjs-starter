@@ -13,6 +13,11 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+type Cat = {
+  catName: string;
+  catAge: number;
+};
+
 interface catDto {
   catName: string;
   catAge: number;
@@ -27,8 +32,7 @@ export class CatsController {
 
   @Get('/get_a_cat_nest')
   getACat(@Req() request: Request): string {
-    console.log(request.originalUrl);
-    return 'This action returns a cat.';
+    return `This action returns a cat from ${request.originalUrl}`;
   }
 
   @Get('/get_a_cat_express')
@@ -84,5 +88,19 @@ export class CatsController {
   @Header('Cache-Control', 'none')
   postHeader(): string {
     return 'Post action with header';
+  }
+
+  @Get('/get_all_cats_async')
+  async getAllCatsAsync(): Promise<Cat[]> {
+    return [
+      {
+        catName: 'Tom',
+        catAge: 2,
+      },
+      {
+        catName: 'Hugo',
+        catAge: 3,
+      },
+    ];
   }
 }
