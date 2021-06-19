@@ -36,9 +36,9 @@ export class CatsController {
     return res.status(200).send('This action returns a cat using express.');
   }
 
-  @Get('/get_a_cat_with_param/:id')
-  getACatWithParam(@Param() param): string {
-    return `This action gets a cat using param: ${JSON.stringify(param)}`;
+  @Get('/get_a_cat_with_param/:id/:age')
+  getACatWithParam(@Param('id') id: number, @Param('age') age: number): string {
+    return `This action gets a cat with id: ${id}, and age: ${age}`;
   }
 
   @Get('/get_cat_wildcard/ab*cd')
