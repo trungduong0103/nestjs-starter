@@ -12,6 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { CreateCatDto } from './dto/create-cat.dto';
 
 type Cat = {
   catName: string;
@@ -42,18 +43,18 @@ export class CatsController {
 
   @Get('/get_a_cat_with_param/:id/:age')
   getACatWithParam(@Param('id') id: number, @Param('age') age: number): string {
-    return `This action gets a cat with id: ${id}, and age: ${age}`;
+    return `This action gets a cat with id: ${id}, and age: ${age}.`;
   }
 
   @Get('/get_cat_wildcard/ab*cd')
   getCatWildCard(): string {
-    return 'This action returns a wildcard cat';
+    return 'This action returns a wildcard cat.';
   }
 
   @Get('/redirect')
   @Redirect('https://notion.so', 301)
   redirect(): string {
-    return 'redirect to somewhere else';
+    return "you won't see this because you are redirected to somewhere else.";
   }
 
   @Get('/override_redirect_decorator')
@@ -62,6 +63,20 @@ export class CatsController {
     if (version && version === '5') {
       return { url: 'https://docs.nestjs.com/v5/', statusCode: 301 };
     }
+  }
+
+  @Get('/get_all_cats_async')
+  async getAllCatsAsync(): Promise<Cat[]> {
+    return [
+      {
+        catName: 'Tom',
+        catAge: 2,
+      },
+      {
+        catName: 'Hugo',
+        catAge: 3,
+      },
+    ];
   }
 
   @Post('/post_a_cat')
@@ -81,26 +96,18 @@ export class CatsController {
   @Post('/post_anything')
   @HttpCode(204)
   return204(): string {
-    return 'This action returns a 204 response';
+    return 'This action returns a 204 response.';
   }
 
   @Post('/post_header')
   @Header('Cache-Control', 'none')
   postHeader(): string {
-    return 'Post action with header';
+    return 'Post action with header.';
   }
 
-  @Get('/get_all_cats_async')
-  async getAllCatsAsync(): Promise<Cat[]> {
-    return [
-      {
-        catName: 'Tom',
-        catAge: 2,
-      },
-      {
-        catName: 'Hugo',
-        catAge: 3,
-      },
-    ];
+  @Post('/create_a_cat')
+  createACat(@Body() body: CreateCatDto) {
+    const { age, name, breed } = body;
+    return `This action creates a cat with name: ${name}, age: ${age}, breed: ${breed}.`;
   }
 }
