@@ -15,16 +15,50 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { ListAllCatsDto } from './dto/list-all-cats.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats-api')
 export class CatsController {
-  @Get('/get_all_cats')
-  findAll(): string {
-    return 'This action returns all cats.';
+  constructor(private catService: CatsService) {}
+  // a full example
+  @Post('/create_a_cat')
+  createACat(@Body() cat: CreateCatDto): string {
+    this.catService.create(cat);
+    return 'This action creates a cat';
   }
+
+  @Get('/get_all_cats')
+  findAll(): Cat[] {
+    return this.catService.findAll();
+  }
+
+  @Get('/list_all_cats')
+  listAllCats(@Query() query: ListAllCatsDto): string {
+    const { limit, orderBy } = query;
+    return `This action list all cats by ${limit} and order by ${orderBy}.`;
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): string {
+    return `This action returns cat #${id}.`;
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto): string {
+    const { name, age, breed } = updateCatDto;
+    return `This action updates cats #${id} with name: ${name}, age: ${age}, breed: ${breed}`;
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string): string {
+    return `This action delete cats #${id}.`;
+  }
+
+  // end of example
 
   @Get('/get_a_cat_nest')
   getACat(@Req() request: Request): string {
@@ -102,35 +136,5 @@ export class CatsController {
   @Header('Cache-Control', 'none')
   postHeader(): string {
     return 'Post action with header.';
-  }
-
-  // a full example
-
-  @Post('/create_a_cat')
-  createACat(@Body() body: CreateCatDto) {
-    const { age, name, breed } = body;
-    return `This action creates a cat with name: ${name}, age: ${age}, breed: ${breed}.`;
-  }
-
-  @Get('/list_all_cats')
-  listAllCats(@Query() query: ListAllCatsDto): string {
-    const { limit, orderBy } = query;
-    return `This action list all cats by ${limit} and order by ${orderBy}.`;
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `This action returns cat #${id}.`;
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto): string {
-    const { name, age, breed } = updateCatDto;
-    return `This action updates cats #${id} with name: ${name}, age: ${age}, breed: ${breed}`;
-  }
-
-  @Delete(':id')
-  delete(@Param('id') id: string): string {
-    return `This action delete cats #${id}.`;
   }
 }
