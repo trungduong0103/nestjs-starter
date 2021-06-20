@@ -5,6 +5,7 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -17,16 +18,6 @@ import { Request, Response } from 'express';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { ListAllCatsDto } from './dto/list-all-cats.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
-
-type Cat = {
-  catName: string;
-  catAge: number;
-};
-
-interface catDto {
-  catName: string;
-  catAge: number;
-}
 
 @Controller('cats-api')
 export class CatsController {
@@ -41,8 +32,10 @@ export class CatsController {
   }
 
   @Get('/get_a_cat_express')
-  getACatExpress(@Req() req: Request, @Res() res: Response) {
-    return res.status(200).send('This action returns a cat using express.');
+  getACatExpress(@Res() res: Response) {
+    return res
+      .status(HttpStatus.I_AM_A_TEAPOT)
+      .send('This action returns a cat using express.');
   }
 
   @Get('/get_a_cat_with_param/:id/:age')
@@ -70,22 +63,24 @@ export class CatsController {
   }
 
   @Get('/get_all_cats_async')
-  async getAllCatsAsync(): Promise<Cat[]> {
+  async getAllCatsAsync(): Promise<CreateCatDto[]> {
     return [
       {
-        catName: 'Tom',
-        catAge: 2,
+        name: 'Tom',
+        age: 2,
+        breed: 'Russian short-hair',
       },
       {
-        catName: 'Hugo',
-        catAge: 3,
+        name: 'Hugo',
+        age: 3,
+        breed: 'Minx',
       },
     ];
   }
 
   @Post('/post_a_cat')
   postACat(
-    @Body() reqBody: catDto,
+    @Body() reqBody: CreateCatDto,
     @Body('catAge') catAge: number,
     @Body('catName') catName: string,
     @Param() reqParam,
