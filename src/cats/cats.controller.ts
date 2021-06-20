@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Header,
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   Redirect,
   Req,
@@ -13,6 +15,8 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CreateCatDto } from './dto/create-cat.dto';
+import { ListAllCatsDto } from './dto/list-all-cats.dto';
+import { UpdateCatDto } from './dto/update-cat.dto';
 
 type Cat = {
   catName: string;
@@ -105,9 +109,33 @@ export class CatsController {
     return 'Post action with header.';
   }
 
+  // a full example
+
   @Post('/create_a_cat')
   createACat(@Body() body: CreateCatDto) {
     const { age, name, breed } = body;
     return `This action creates a cat with name: ${name}, age: ${age}, breed: ${breed}.`;
+  }
+
+  @Get('/list_all_cats')
+  listAllCats(@Query() query: ListAllCatsDto): string {
+    const { limit, orderBy } = query;
+    return `This action list all cats by ${limit} and order by ${orderBy}.`;
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): string {
+    return `This action returns cat #${id}.`;
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto): string {
+    const { name, age, breed } = updateCatDto;
+    return `This action updates cats #${id} with name: ${name}, age: ${age}, breed: ${breed}`;
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string): string {
+    return `This action delete cats #${id}.`;
   }
 }
