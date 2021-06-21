@@ -6,4 +6,4 @@ import { SubDomainRoutingController } from './sub-domain-routing.controller';
   controllers: [SubDomainRoutingController],
   imports: [CatsModule],
 })
-export class SubdomainRouting {}
+export class SubdomainRoutingModule {}
