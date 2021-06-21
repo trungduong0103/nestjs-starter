@@ -5,7 +5,7 @@ import { CatsModule } from './cats/cats.module';
 import { SubDomainRoutingController } from './sub-domain-routing/sub-domain-routing.controller';
 
 @Module({
-  imports: [CatsModule],
+  imports: [],
   controllers: [AppController, SubDomainRoutingController],
   providers: [AppService],
 })
