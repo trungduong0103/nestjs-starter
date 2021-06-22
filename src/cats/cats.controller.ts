@@ -25,7 +25,7 @@ import { Cat } from './interfaces/cat.interface';
 export class CatsController {
   constructor(private catService: CatsService) {}
   // a full example
-  @Post('/create_a_cat')
+  @Post('/create-a-cat')
   createACat(@Body() cat: CreateCatDto): string {
     this.catService.create(cat);
     return 'This action creates a cat';
@@ -42,18 +42,18 @@ export class CatsController {
     return `This action list all cats by ${limit} and order by ${orderBy}.`;
   }
 
-  @Get(':id')
+  @Get('/get_cat/:id')
   findOne(@Param('id') id: string): string {
     return `This action returns cat #${id}.`;
   }
 
-  @Put(':id')
+  @Put('/update_cat/:id')
   update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto): string {
     const { name, age, breed } = updateCatDto;
     return `This action updates cats #${id} with name: ${name}, age: ${age}, breed: ${breed}`;
   }
 
-  @Delete(':id')
+  @Delete('/delete_cat/:id')
   delete(@Param('id') id: string): string {
     return `This action delete cats #${id}.`;
   }
@@ -86,6 +86,12 @@ export class CatsController {
   @Redirect('https://notion.so', 301)
   redirect(): string {
     return "you won't see this because you are redirected to somewhere else.";
+  }
+
+  @Get('/redirect_controller')
+  @Redirect('/bye', 301)
+  redirectController(): string {
+    return 'redirected to AppController';
   }
 
   @Get('/override_redirect_decorator')
