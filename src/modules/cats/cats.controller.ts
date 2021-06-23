@@ -25,7 +25,7 @@ import { Cat } from './interfaces/cat.interface';
 export class CatsController {
   constructor(private catService: CatsService) {}
   // a full example
-  @Post('/create-a-cat')
+  @Post('/create_a_cat')
   createACat(@Body() cat: CreateCatDto): string {
     this.catService.create(cat);
     return 'This action creates a cat';
