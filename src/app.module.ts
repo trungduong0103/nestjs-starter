@@ -23,10 +23,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .exclude({
-        path: 'cats-api/create_a_cat',
-        method: RequestMethod.POST,
-      })
+      .exclude('/cats-api/(.*)')
       .forRoutes(CatsController, PetsController);
   }
 }
