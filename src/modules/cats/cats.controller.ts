@@ -5,6 +5,7 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -45,6 +46,11 @@ export class CatsController {
   @Get('/get_cat/:id')
   findOne(@Param('id') id: string): string {
     return `This action returns cat #${id}.`;
+  }
+
+  @Get('/forbidden_cat')
+  forbidden() {
+    throw new HttpException('Fobidden', HttpStatus.FORBIDDEN);
   }
 
   @Put('/update_cat/:id')

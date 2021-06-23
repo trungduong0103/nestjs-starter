@@ -1,11 +1,6 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
-
-import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { FunctionalLogger } from './middlewares/functional-logger.middleware';
+import { Logger } from './middlewares/logger.middleware';
 import { CatsController } from './modules/cats/cats.controller';
 // import { AppController } from './app.controller';
 // import { AppService } from './app.service';
@@ -22,8 +17,7 @@ import { PetsModule } from './modules/pets/pets.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(LoggerMiddleware)
-      .exclude('/cats-api/(.*)')
+      .apply(Logger, FunctionalLogger)
       .forRoutes(CatsController, PetsController);
   }
 }
