@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -13,9 +14,12 @@ import {
   Redirect,
   Req,
   Res,
+  UseFilters,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ForbiddenException } from '../../exceptions/forbidden.exception';
+import { BadRequestExceptionFilter } from '../../filters/bad-request-exception.filter';
+import { HttpExceptionFilter } from '../../filters/http-exception.filter';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { ListAllCatsDto } from './dto/list-all-cats.dto';
@@ -27,7 +31,11 @@ export class CatsController {
   constructor(private catService: CatsService) {}
   // a full example
   @Post('/create_a_cat')
+  @UseFilters(BadRequestExceptionFilter)
   createACat(@Body() cat: CreateCatDto): string {
+    if (!cat.age || !cat.breed || !cat.name) {
+      throw new BadRequestException();
+    }
     this.catService.create(cat);
     return 'This action creates a cat';
   }
@@ -49,6 +57,7 @@ export class CatsController {
   }
 
   @Get('/forbidden_cat')
+  @UseFilters(HttpExceptionFilter)
   forbidden() {
     throw new ForbiddenException();
   }
