@@ -5,7 +5,6 @@ import {
   Get,
   Header,
   HttpCode,
-  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -16,6 +15,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ForbiddenException } from '../../exceptions/forbidden.exception';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { ListAllCatsDto } from './dto/list-all-cats.dto';
@@ -50,13 +50,7 @@ export class CatsController {
 
   @Get('/forbidden_cat')
   forbidden() {
-    throw new HttpException(
-      {
-        message: 'This is a custom error message',
-        status: 403,
-      },
-      HttpStatus.FORBIDDEN,
-    );
+    throw new ForbiddenException();
   }
 
   @Put('/update_cat/:id')
