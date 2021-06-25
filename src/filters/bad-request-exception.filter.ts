@@ -1,20 +1,17 @@
-import {
-  ArgumentsHost,
-  BadRequestException,
-  Catch,
-  ExceptionFilter,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { CustomBadRequestException } from '../exceptions';
 
-@Catch(BadRequestException)
+@Catch(CustomBadRequestException)
 export class BadRequestExceptionFilter implements ExceptionFilter {
-  catch(exception: BadRequestException, host: ArgumentsHost) {
+  catch(exception: CustomBadRequestException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
     response.status(status).json({
+      error: exception.message,
       statusCode: status,
       timestamp: new Date().toLocaleString(),
       path: request.url,
