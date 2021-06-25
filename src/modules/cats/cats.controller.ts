@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -14,10 +13,13 @@ import {
   Redirect,
   Req,
   Res,
-  UnauthorizedException,
   UseFilters,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import {
+  CustomBadRequestException,
+  CustomUnauthorizedException,
+} from '../../exceptions';
 import {
   BadRequestExceptionFilter,
   UnauthorizedExceptionFilter,
@@ -34,7 +36,7 @@ export class CatsController {
   @Post('/create_a_cat')
   createACat(@Body() cat: CreateCatDto): string {
     if (!cat.age || !cat.breed || !cat.name) {
-      throw new BadRequestException();
+      throw new CustomBadRequestException();
     }
     this.catService.create(cat);
     return 'This action creates a cat';
@@ -58,7 +60,7 @@ export class CatsController {
 
   @Get('/forbidden_cat')
   forbidden() {
-    throw new UnauthorizedException();
+    throw new CustomUnauthorizedException();
   }
 
   @Put('/update_cat/:id')
