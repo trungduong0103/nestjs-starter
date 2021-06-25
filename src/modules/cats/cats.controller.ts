@@ -50,7 +50,13 @@ export class CatsController {
 
   @Get('/forbidden_cat')
   forbidden() {
-    throw new HttpException('Fobidden', HttpStatus.FORBIDDEN);
+    throw new HttpException(
+      {
+        message: 'This is a custom error message',
+        status: 403,
+      },
+      HttpStatus.FORBIDDEN,
+    );
   }
 
   @Put('/update_cat/:id')
