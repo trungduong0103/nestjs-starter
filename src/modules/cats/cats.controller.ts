@@ -14,24 +14,24 @@ import {
   Redirect,
   Req,
   Res,
+  UnauthorizedException,
   UseFilters,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ForbiddenException } from '../../exceptions/forbidden.exception';
-import { BadRequestExceptionFilter } from '../../filters/bad-request-exception.filter';
-import { HttpExceptionFilter } from '../../filters/http-exception.filter';
+import {
+  BadRequestExceptionFilter,
+  UnauthorizedExceptionFilter,
+} from '../../filters';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/create-cat.dto';
-import { ListAllCatsDto } from './dto/list-all-cats.dto';
-import { UpdateCatDto } from './dto/update-cat.dto';
+import { CreateCatDto, ListAllCatsDto, UpdateCatDto } from './dto';
 import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats-api')
+@UseFilters(BadRequestExceptionFilter, UnauthorizedExceptionFilter)
 export class CatsController {
   constructor(private catService: CatsService) {}
   // a full example
   @Post('/create_a_cat')
-  @UseFilters(BadRequestExceptionFilter)
   createACat(@Body() cat: CreateCatDto): string {
     if (!cat.age || !cat.breed || !cat.name) {
       throw new BadRequestException();
@@ -57,9 +57,8 @@ export class CatsController {
   }
 
   @Get('/forbidden_cat')
-  @UseFilters(HttpExceptionFilter)
   forbidden() {
-    throw new ForbiddenException();
+    throw new UnauthorizedException();
   }
 
   @Put('/update_cat/:id')
