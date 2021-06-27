@@ -6,6 +6,7 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  ImATeapotException,
   Param,
   Post,
   Put,
@@ -24,12 +25,17 @@ import {
   BadRequestExceptionFilter,
   UnauthorizedExceptionFilter,
 } from '../../filters';
+import { CatchAllExceptionFilter } from '../../filters/catch-all-exception.filter';
 import { CatsService } from './cats.service';
 import { CreateCatDto, ListAllCatsDto, UpdateCatDto } from './dto';
 import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats-api')
-@UseFilters(BadRequestExceptionFilter, UnauthorizedExceptionFilter)
+@UseFilters(
+  CatchAllExceptionFilter,
+  BadRequestExceptionFilter,
+  UnauthorizedExceptionFilter,
+)
 export class CatsController {
   constructor(private catService: CatsService) {}
   // a full example
@@ -44,7 +50,8 @@ export class CatsController {
 
   @Get('/get_all_cats')
   findAll(): Cat[] {
-    return this.catService.findAll();
+    throw new ImATeapotException();
+    // return this.catService.findAll();
   }
 
   @Get('/list_all_cats')
