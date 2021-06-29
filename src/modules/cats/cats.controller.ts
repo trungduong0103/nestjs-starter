@@ -18,15 +18,12 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import {
-  CustomBadRequestException,
-  CustomUnauthorizedException,
-} from '../../exceptions';
+import { CustomUnauthorizedException } from '../../exceptions';
 import {
   BadRequestExceptionFilter,
   UnauthorizedExceptionFilter,
 } from '../../filters';
-import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
+import { JoiValidationPipe } from '../../pipes';
 import { CatsService } from './cats.service';
 import { CreateCatDto, ListAllCatsDto, UpdateCatDto } from './dto';
 import { Cat } from './interfaces/cat.interface';
