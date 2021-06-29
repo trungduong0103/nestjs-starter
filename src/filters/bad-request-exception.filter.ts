@@ -10,8 +10,11 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
+    const exceptionError = exception.getResponse();
+
     response.status(status).json({
-      error: exception.message,
+      message: exceptionError['message'],
+      error: exceptionError['error'],
       statusCode: status,
       timestamp: new Date().toLocaleString(),
       path: request.url,

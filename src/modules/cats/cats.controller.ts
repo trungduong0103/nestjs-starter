@@ -15,6 +15,7 @@ import {
   Req,
   Res,
   UseFilters,
+  UsePipes,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
@@ -25,9 +26,11 @@ import {
   BadRequestExceptionFilter,
   UnauthorizedExceptionFilter,
 } from '../../filters';
+import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
 import { CatsService } from './cats.service';
 import { CreateCatDto, ListAllCatsDto, UpdateCatDto } from './dto';
 import { Cat } from './interfaces/cat.interface';
+import createCatSchema from './schemas/create-cat.schema';
 
 @Controller('cats-api')
 @UseFilters(BadRequestExceptionFilter, UnauthorizedExceptionFilter)
@@ -35,10 +38,8 @@ export class CatsController {
   constructor(private catService: CatsService) {}
   // a full example
   @Post('/create_a_cat')
+  @UsePipes(new JoiValidationPipe(createCatSchema))
   createACat(@Body() cat: CreateCatDto): string {
-    if (!cat.age || !cat.breed || !cat.name) {
-      throw new CustomBadRequestException();
-    }
     this.catService.create(cat);
     return 'This action creates a cat';
   }
@@ -55,8 +56,19 @@ export class CatsController {
   }
 
   @Get('/get_cat/:id')
-  findOne(@Param('id', ParseIntPipe) id: number): string {
+  findOne(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+  ): string {
     return `This action returns cat #${id}.`;
+  }
+
+  @Get('/query_cat')
+  findOneQuery(@Query('id', ParseIntPipe) id: number): string {
+    return `This action returns cat ${id}.`;
   }
 
   @Get('/forbidden_cat')

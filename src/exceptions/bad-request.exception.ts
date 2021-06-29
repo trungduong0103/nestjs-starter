@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
+interface BadRequestErrorInterface {
+  message: string;
+  error: string;
+}
+
 export class CustomBadRequestException extends HttpException {
-  constructor() {
-    super('Bad Request received!', HttpStatus.BAD_REQUEST);
+  constructor({ message, error }: BadRequestErrorInterface) {
+    super({ message, error }, HttpStatus.BAD_REQUEST);
   }
 }
