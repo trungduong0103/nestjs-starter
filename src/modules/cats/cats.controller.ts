@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -19,8 +21,9 @@ import {
   UnauthorizedExceptionFilter,
 } from '../../filters';
 import { ClassValidatorValidationPipe, ToSpecialCatPipe } from '../../pipes';
+import { DefaultCatPipe } from '../../pipes/default-cat.pipe';
 import { CatsService } from './cats.service';
-import { CreateCatDto, ListAllCatsDto, UpdateCatDto } from './dto';
+import { CreateCatDto, UpdateCatDto } from './dto';
 import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats-api')
@@ -30,7 +33,15 @@ export class CatsController {
   // a full example
   @Post('/create_a_cat')
   createACat(
-    @Body(new ClassValidatorValidationPipe()) cat: CreateCatDto,
+    @Body(
+      new DefaultCatPipe({
+        name: 'Gentle William',
+        age: 1,
+        breed: 'Russian short-hair',
+      }),
+      new ClassValidatorValidationPipe(),
+    )
+    cat: CreateCatDto,
   ): string {
     this.catService.create(cat);
     return 'This action creates a cat';
@@ -44,14 +55,11 @@ export class CatsController {
   }
 
   @Get('/get_all_cats')
-  findAll(): Cat[] {
-    return this.catService.findAll();
-  }
-
-  @Get('/list_all_cats')
-  listAllCats(@Query() query: ListAllCatsDto): string {
-    const { limit, orderBy } = query;
-    return `This action list all cats by ${limit} and order by ${orderBy}.`;
+  findAll(
+    @Query('orderByName', new DefaultValuePipe(true), ParseBoolPipe)
+    orderByName: boolean,
+  ): Cat[] {
+    return this.catService.findAll({ orderByName });
   }
 
   @Get('/get_cat/:id')
