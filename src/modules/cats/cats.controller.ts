@@ -56,10 +56,10 @@ export class CatsController {
 
   @Get('/get_all_cats')
   findAll(
-    @Query('orderByName', new DefaultValuePipe(true), ParseBoolPipe)
-    orderByName: boolean,
+    @Query('orderByNameAsc', new DefaultValuePipe(true), ParseBoolPipe)
+    orderByNameAsc: boolean,
   ): Cat[] {
-    return this.catService.findAll({ orderByName });
+    return this.catService.findAll({ orderByNameAsc });
   }
 
   @Get('/get_cat/:id')

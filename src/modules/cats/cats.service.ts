@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cat } from './interfaces/cat.interface';
 
 type FindAllCatsOption = {
-  orderByName: boolean;
+  orderByNameAsc: boolean;
 };
 
 @Injectable()
@@ -14,17 +14,18 @@ export class CatsService {
   }
 
   findAll(option?: FindAllCatsOption) {
+    const { orderByNameAsc } = option;
     const filtered = this.cats.sort((a, b) => {
       if (a.name > b.name) {
-        return 1;
+        return orderByNameAsc ? 1 : -1;
       }
       if (a.name < b.name) {
-        return -1;
+        return orderByNameAsc ? -1 : 1;
       }
 
       return 0;
     });
 
-    return option.orderByName ? filtered : this.cats;
+    return filtered;
   }
 }
