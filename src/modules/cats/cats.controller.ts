@@ -10,13 +10,15 @@ import {
   Put,
   Query,
   UseFilters,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CustomUnauthorizedException } from '../../exceptions';
 import {
   BadRequestExceptionFilter,
   UnauthorizedExceptionFilter,
 } from '../../filters';
-import { ClassValidatorValidationPipe } from '../../pipes/class-validator-validation.pipe';
+import { ClassValidatorValidationPipe, ToSpecialCatPipe } from '../../pipes';
 import { CatsService } from './cats.service';
 import { CreateCatDto, ListAllCatsDto, UpdateCatDto } from './dto';
 import { Cat } from './interfaces/cat.interface';
@@ -32,6 +34,13 @@ export class CatsController {
   ): string {
     this.catService.create(cat);
     return 'This action creates a cat';
+  }
+
+  @Post('create_special_cat')
+  @UsePipes(new ValidationPipe(), new ToSpecialCatPipe())
+  createSpecialCat(@Body() cat: CreateCatDto): string {
+    this.catService.create(cat);
+    return 'Created a special cat!';
   }
 
   @Get('/get_all_cats')
